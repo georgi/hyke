@@ -77,21 +77,20 @@ renderLayout blog content = do
       H.title $ toHtml $ blogTitle blog
       meta ! httpEquiv "Content-Type" ! A.content "text/html; charset=UTF-8"
       link ! rel "alternate" ! type_ "application/atom+xml" ! href "/atom.xml" ! A.title "Atom 1.0"
-      link ! rel "stylesheet" ! media "screen" ! type_ "text/css" ! href "/style.css"
-      link ! rel "stylesheet" ! href "/zenburn.css"
-      script ! src "/highlight.pack.js" $ ""
-      script $ "hljs.initHighlightingOnLoad();"
-    body $ do
+      link ! rel "stylesheet" ! media "screen" ! type_ "text/css" ! href "style.css"
+      script ! src "script.js" $ ""
+      script "hljs.initHighlightingOnLoad();"
+    body $
       div ! class_ "container" $ do
-        h2 ! id "header" $ do
+        h2 ! id "header" $
           a ! href "/" $ toHtml $ blogTitle blog
-        div ! class_ "content" $ do
+        div ! class_ "content" $ 
           preEscapedToHtml content
 
 renderPost :: Post -> Html
 renderPost post =
   div ! class_ "article" $ do
-    h1 $ do
+    h1 $
       a ! href (toValue (postLink post)) $ toHtml $ postTitle post
     preEscapedToHtml $ postBody post
 
@@ -99,7 +98,7 @@ renderPostPage :: Blog -> Post -> String
 renderPostPage blog post = H.renderHtml $ renderLayout blog $ renderPost post
 
 renderPostList :: Blog -> [Post] -> String -> String
-renderPostList blog posts next = H.renderHtml $ do
+renderPostList blog posts next = H.renderHtml $
   renderLayout blog $ do
-    sequence_ $ map renderPost posts
+    mapM_ renderPost posts
     a ! rel "next" ! href (toValue next) $ "Next entries"
